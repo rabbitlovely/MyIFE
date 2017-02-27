@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>task5</title>
+		<meta charset="utf-8" lang="gb23123">
+		<meta name="description" content="基于task4，限制输入的数字在10-100，最多限制为60个，用高度表示数字大小，实现一个简单排序" />
+		<style type="text/css">
+			#container{
+					width: 100%;
+					height: 150px;
+					margin: 0 auto;
+					border: 1px solid blue;
+			}
+			 #container div {  
+			 		
+			 		width: 0.5%;
+			 		float: left;
+			 		display: inline-block;
+			 		box-sizing: border-box;
+	                background-color: red;
+	                border:1px solid yellow;
+	            }
+		</style>
+	</head>
+	<body>
+
+		<input type="text">
+		<input type="button" value="左侧入">
+		<input type="button" value="右侧入">
+		<input type="button" value="左侧出">
+		<input type="button" value="右侧出">
+		<input type="button" value="sort">
+		<div id="container"></div>
+
+		<script>
+			var inputList = document.getElementsByTagName("input");
+			var container = document.getElementById("container");
+
+			window.onload = function () {
+
+				//定义数组对象queue
+				var queue = {
+
+					str : [],
+
+					leftPush: function(num){
+						if (this.str.length < 60) {
+							this.str.unshift(num);
+							this.paint();
+						}
+						else{
+							alert("队列已满，不能超过60个")
+						}					
+					},
+
+					rightPush: function(num){
+						if (this.str.length < 60) {
+							this.str.push(num);
+							this.paint();
+						}
+						else{
+							alert("队列已满，不能超过60个")
+						}		
+					},
+
+					leftPop:function(){
+						if (this.str.length) {
+							alert(this.str.shift());
+							this.paint();
+						}
+						else{
+							alert("数组为空");
+						}
+					},
+
+					rightPop: function(){
+						if (this.str.length) {
+							alert(this.str.pop());
+							this.paint();
+						}
+						else{
+							alert("数组为空");			
+						}
+					},
+
+					//数组遍历展示
+					paint: function(){
+						var list = "";
+						for (var i = 0; i < this.str.length; i++) {
+							list += "<div style='height:" + this.str[i] +"px;'>" + "</div>";
+						}
+						container.innerHTML = list;
+						addDeletediv();
+					}
+				}
+
+					//删除div,使用闭包，否则永远绑定到指定div上的delete函数的参数是数组长度，删除的永远是最左边div
+					function addDeletediv(){
+						for (var i = 0; i < container.childElementCount; i++) {
+							container.children[i].addEventListener("click", function(i){
+						return function(){ queue.str.splice(i,1);
+									queue.paint();};
+					}(i));
+						}
+					}
+
+					//sort
+					function sort(){
+						var Clock;
+						var count = 0, i = 0;
+						console.log(queue.str.length);
+						Clock = setInterval(function(){
+							if (count >= queue.str.length) {
+								clearInterval(Clock);
+							}
+							if(i == queue.str.length -1 -count){
+								i = 0;
+								count ++;
+							}
+							if (queue.str[i] > queue.str[i + 1]) {
+								var temp = queue.str[i];
+								queue.str[i] = queue.str[i + 1];
+								queue.str[i + 1] = temp;
+								queue.paint();
+							}
+							i++;
+						},100);
+					}
+
+
+				//绑定点击事件函数
+				inputList[1].addEventListener("click", function(){
+					var num = inputList[0].value;
+					if ((/^[0-9]+$/).test(num) && 10 <= num && num <= 100){
+							queue.leftPush(num);
+						}
+						else{
+							alert("请输入10-100的数字");
+						}
+				});
+		-
+				inputList[2].addEventListener("click", function(){
+					var num = inputList[0].value;
+					if ((/^[0-9]+$/).test(num) && 10 <= num && num <= 100){
+							queue.rightPush(num);
+						}
+						else{
+							alert("请输入10-100的数字");
+						}
+				});
+
+				inputList[3].addEventListener("click", function(){
+					queue.leftPop();
+				});
+
+				inputList[4].addEventListener("click", function(){
+					queue.rightPop();
+				});
+
+				inputList[5].addEventListener("click", function(){
+					sort();
+				});
+			}
+		</script>
+	</body>
+</html>
