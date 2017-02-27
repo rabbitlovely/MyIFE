@@ -78,13 +78,13 @@
 					}
 				}
 
-					//删除div
+					//删除div,使用闭包，否则永远绑定到指定div上的delete函数的参数是数组长度，删除的永远是最左边div
 					function addDeletediv(){
-						for (var i = 0; i < container.childNodes.length; i++) {
-							container.childNodes[i].addEventListener("click", function(i){
-								queue.str.splice(i,1);
-								queue.paint();
-							});
+						for (var i = 0; i < container.childElementCount; i++) {
+							container.children[i].addEventListener("click", function(i){
+						return function(){ queue.str.splice(i,1);
+									queue.paint();};
+					}(i));
 						}
 					}
 
