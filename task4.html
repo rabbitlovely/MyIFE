@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>task4</title>
+		<meta charset="utf-8" lang="gb23123">
+		<meta name="description" content="模拟一个队列，队列的每个元素是一个数字，初始队列为空.可进行左右进出栈和删除节点操作" />
+		<style type="text/css">
+			 #container div {
+	                display: inline-block;
+	                font-size: 30px;
+	                text-align: center;
+	                padding: 0 15px;
+	                margin: 2px 0;
+	                margin-right: 10px;
+	                height: 50px;
+	                line-height: 50px;                
+	                background-color: red;
+	                color: #FFFFFF;
+	            }
+		</style>
+	</head>
+	<body>
+
+		<input type="text">
+		<input type="button" value="左侧入">
+		<input type="button" value="右侧入">
+		<input type="button" value="左侧出">
+		<input type="button" value="右侧出">
+		<div id="container"></div>
+
+		<script>
+			var inputList = document.getElementsByTagName("input");
+			var container = document.getElementById("container");
+
+			window.onload = function () {
+
+				//定义数组对象queue
+				var queue = {
+
+					str : [],
+
+					leftPush: function(num){
+						this.str.unshift(num);
+						this.paint();
+					},
+
+					rightPush: function(num){
+						this.str.push(num);
+						this.paint();
+					},
+
+					leftPop:function(){
+						if (this.str.length) {
+							alert(this.str.shift());
+							this.paint();
+						}
+						else
+							alert("数组为空");
+					},
+
+					rightPop: function(){
+						if (this.str.length) {
+							alert(this.str.pop());
+							this.paint();
+						}
+						else
+							alert("数组为空");			
+					},
+
+					//数组遍历展示
+					paint: function(){
+						var list = "";
+						for (var i = 0; i < this.str.length; i++) {
+							list += "<div>" + this.str[i] + "</div>";
+						}
+						container.innerHTML = list;
+						addDeletediv();
+					}
+				}
+
+					//删除div
+					function addDeletediv(){
+						for (var i = 0; i < container.childNodes.length; i++) {
+							container.childNodes[i].addEventListener("click", function(i){
+								queue.str.splice(i,1);
+								queue.paint();
+							});
+						}
+					}
+
+
+				//绑定点击事件函数
+				inputList[1].addEventListener("click", function(){
+					var num = inputList[0].value;
+					if ((/^[0-9]+$/).test(num)){
+						queue.leftPush(num);
+					}
+					else{
+						alert("请输入数字！");
+					}
+				});
+		-
+				inputList[2].addEventListener("click", function(){
+					var num = inputList[0].value;
+					if ((/^[0-9]+$/).test(num))
+						queue.rightPush(num);
+					else
+						alert("请输入数字！");
+				});
+
+				inputList[3].addEventListener("click", function(){
+					queue.leftPop();
+				});
+
+				inputList[4].addEventListener("click", function(){
+					queue.rightPop();
+				});
+			}
+		</script>
+	</body>
+</html>
