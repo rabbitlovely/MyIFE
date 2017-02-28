@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>task6</title>
+		<meta charset="utf-8" lang="gb23123">
+		<meta name="description" content="实践JavaScript数组、字符串相关操作，做模糊匹配" />
+		<style type="text/css">
+			 #container div {
+	                display: inline-block;
+	                font-size: 30px;
+	                text-align: center;
+	                padding: 0 15px;
+	                margin: 2px 0;
+	                margin-right: 10px;
+	                height: 50px;
+	                line-height: 50px;                
+	                background-color: red;
+	                color: #FFFFFF;
+	            }
+		</style>
+	</head>
+	<body>
+
+		<textarea></textarea>
+		<input type="button" value="check">
+		<input type="button" value="左侧入">
+		<input type="button" value="右侧入">
+		<input type="button" value="左侧出">
+		<input type="button" value="右侧出">
+		<div id="container"></div>
+
+		<script>
+			var inputList = document.getElementsByTagName("input");
+			var container = document.getElementById("container");
+			var text = document.getElementsByTagName("textarea")[0];
+
+			window.onload = function () {
+
+				//定义数组对象queue
+				var queue = {
+
+					str : [],
+
+					leftPush: function(arr){
+						for(var x in arr){
+							this.str.unshift(arr[x]);
+						}
+						this.paint();
+					},
+
+					rightPush: function(arr){
+						for(var x in arr){
+								this.str.push(arr[x]);
+						}
+						this.paint();
+					},
+
+					leftPop:function(){
+						if (this.str.length) {
+							alert(this.str.shift());
+							this.paint();
+						}
+						else
+							alert("数组为空");
+					},
+
+					rightPop: function(){
+						if (this.str.length) {
+							alert(this.str.pop());
+							this.paint();
+						}
+						else
+							alert("数组为空");			
+					},
+
+					//数组遍历展示
+					paint: function(){
+						var list = "";
+						for (var i = 0; i < this.str.length; i++) {
+							list += "<div>" + this.str[i] + "</div>";
+						}
+						container.innerHTML = list;
+						addDeletediv();
+					}
+				}
+					//去掉textarea内读取到字符串前后的空格
+					function trim(text){
+						var r1 = /^\s*/;
+						var r2 = /\s*$/;
+						return (text.replace(r1,"")).replace(r2,"");
+					}
+
+					//分割textarea内容
+					function splitText(text){
+						var arr = [];
+						arr = (text).split(/[,，;；·\s\n、]+/);
+						return arr;
+					}
+
+					//删除div,使用闭包，否则永远绑定到指定div上的delete函数的参数是数组长度，删除的永远是最左边div
+					function addDeletediv(){
+						for (var i = 0; i < container.childElementCount; i++) {
+							container.children[i].addEventListener("click", function(i){
+						return function(){ queue.str.splice(i,1);
+									queue.paint();};
+					}(i));
+						}
+					}
+
+					//check
+					function search(text){
+							for (var i = 0; i < container.childElementCount; i++) {
+								if(container.children[i].innerHTML.indexOf(text) != -1 ){
+										container.children[i].style.color = "green";
+										container.children[i].style.background = "yellow";
+								}
+							}
+					}
+
+
+				//绑定点击事件函数
+				inputList[0].addEventListener("click", function(){   //check
+						var checktext = text.value;
+						search(checktext);
+				});
+
+				inputList[1].addEventListener("click", function(){
+						var num = splitText(trim(text.value));
+						queue.leftPush(num);
+					
+				});
+		-
+				inputList[2].addEventListener("click", function(){
+						var num = splitText(trim(text.value));
+						queue.rightPush(num);
+					
+				});
+
+				inputList[3].addEventListener("click", function(){
+					queue.leftPop();
+				});
+
+				inputList[4].addEventListener("click", function(){
+					queue.rightPop();
+				});
+			}
+		</script>
+	</body>
+</html>
