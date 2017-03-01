@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>task7</title>
+	<meta charset="utf-8" lang="gb23123">
+	<meta name="description" content="展示一颗二叉树，定时进行前中后序遍历" />
+	<style type="text/css">
+		#container{
+			width: 550px;
+			height: 200px;
+			padding: 20px;
+			display: flex;
+			background-color: #FFF;
+			border: 1px solid blue;
+			justify-content: space-between;
+		}
+
+		.box1{
+			width: 220px;
+			height: 160px;
+			padding: 20px;
+			display: flex;
+			background-color: #FFF;
+			border: 1px solid blue;
+			justify-content: space-between;
+		}
+
+		.box2{
+			width: 60px;
+			height: 120px;
+			padding: 20px;
+			display: flex;
+			background-color: #FFF;
+			border: 1px solid blue;
+			justify-content: space-between;
+		}
+
+		.box3{
+			width: 5px;
+			height: 90px;
+			padding: 10px;
+			display: flex;
+			background-color: #FFF;
+			border: 1px solid blue;
+			justify-content: space-between;
+		}
+	</style>
+</head>
+<body>
+	<div id="container">
+		<div class="box1">
+			<div class="box2">
+				<div class="box3"></div>
+				<div class="box3"></div>
+			</div>
+			<div class="box2">
+				<div class="box3"></div>
+				<div class="box3"></div>
+			</div>
+		</div>
+		<div class="box1">
+			<div class="box2">
+				<div class="box3"></div>
+				<div class="box3"></div>
+			</div>
+			<div class="box2">
+				<div class="box3"></div>
+				<div class="box3"></div>
+			</div>
+		</div>
+	</div>
+
+	<center>
+		<input type="button" name="pre" value="前序遍历">
+		<input type="button" name="mid" value="中序遍历">
+		<input type="button" name="last" value="后序遍历">
+	</center>
+
+	<script>
+		var inputList = document.getElementsByTagName("input");
+		var rootTree = document.getElementById("container");
+		var arr = [];
+		var Clock = null;
+
+		window.onload = function(){
+			
+			//前序遍历
+			function pre(node){
+				if (node != null) {
+					arr.push(node);
+					pre(node.firstElementChild);
+					pre(node.lastElementChild);
+				}
+				
+			}
+
+			//中序遍历
+			function mid(node){
+				if (node != null) {
+					mid(node.firstElementChild);
+					arr.push(node);
+					mid(node.lastElementChild);
+				}
+			}
+
+			//后序遍历
+			function last(node){
+				if (node != null) {
+					last(node.firstElementChild);
+					last(node.lastElementChild);
+					arr.push(node);
+				}
+			}
+
+			//计时器开始遍历数组，展示前中后序遍历过程
+			function play(){ 
+				var num = 0;
+				arr[num].style.backgroundColor = "red";
+
+				Clock = setInterval(function(){
+					if(num >= arr.length-1){
+						clearInterval(Clock);
+						arr[arr.length-1].style.backgroundColor = "white";
+					}
+					else{
+						num ++;
+					arr[num].style.backgroundColor = "red";
+					arr[num-1].style.backgroundColor = "white";
+					}
+					
+					
+				},500);
+			}
+
+			function reset(){
+				arr = [];
+				clearInterval(Clock);
+				var div = document.getElementsByTagName("div");
+				console.log(div.length);
+				for (var i = 0; i < div.length; i++) {
+					div[i].style.backgroundColor = "#FFF";
+				}
+			}
+
+			//绑定点击事件函数
+			inputList[0].addEventListener("click", function(){
+				reset();
+				pre(rootTree);
+				play();
+			});
+
+			inputList[1].addEventListener("click", function(){
+				reset();
+				mid(rootTree);
+				play();
+			});
+
+			inputList[2].addEventListener("click", function(){
+				reset();
+				mid(rootTree);
+				play();
+			});
+		}
+	</script>
+</body>
+</html>
