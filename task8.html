@@ -122,20 +122,25 @@
 
 			//查询遍历
 			function check(text){
-					for (var num = 0; num < arr.length; num++) {
-						console.log(arr[num])
-						if(arr[num].firstChild.nodeValue.replace(/(^\s*)|(\s*$)/g, "") != text){
-							arr[num].style.backgroundColor = "red";
-							if(num > 0){
+					//for (var num = 0; num < arr.length; num++) {
+						var num = 0;
+						Clock = setInterval(function(){
+							//console.log(arr[num])
+							if(arr[num].firstChild.nodeValue.replace(/(^\s*)|(\s*$)/g, "") != text){
+								arr[num].style.backgroundColor = "red";
+								if(num > 0){
+									arr[num-1].style.backgroundColor = "white";
+								}			
+							}
+							else{
+								arr[num].style.backgroundColor = "yellow";
 								arr[num-1].style.backgroundColor = "white";
-							}			
-						}
-						else{
-							arr[num].style.backgroundColor = "yellow";
-							arr[num-1].style.backgroundColor = "white";
-							break;
-						}
-					}
+								clearInterval(Clock);
+							}
+							num++;
+						},500);
+						
+					//}
 			}
 
 			function reset(){
