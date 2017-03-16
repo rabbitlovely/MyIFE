@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>task9</title>
+	<meta charset="utf-8" lang="gb23123">
+	<meta name="description" content="展示一颗多叉树，进行增删查找和遍历" />
+	<style type="text/css">
+		input{
+			border: 1px solid pink;
+			padding: 5px;
+			background-color: #FFF;
+			margin: 20px 5px;
+		}
+
+		div{
+			padding : 20px;
+			border : 1px solid black;
+			float: left;
+			margin: 10px;
+			background-color: #FFF;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<section>
+		<div id="root">
+			Soga
+			<div>
+				Orangle
+				<div>
+					Apple
+					<div>Pear</div>
+					<div>Bear</div>
+					<div>Cat</div>
+					<div>Pig</div>
+				</div>
+				<div>Phone</div>
+				<div>
+					<div>Book</div>
+				</div>
+				<div>School</div>
+			</div>
+			<div>
+				Note
+				<div>
+					Hu
+					<div>Woman</div>
+					<div>PPP</div>
+					<div>Man</div>
+				</div>
+				<div>
+					People
+					<div>
+						Banana
+						<div>Cat</div>
+					</div>
+					<div>Gass</div>
+				</div>
+			</div>
+			<div>Fish</div>
+		</div>
+	</section>
+
+	<center>
+		<span style="text-align: left;display: inline-block;">
+			<label>1.遍历方式：
+				<input type="button" name="pre" value="前序遍历">
+				<input type="button" name="cengci" value="层次遍历"></br>
+			</label>
+
+			<label>2.输入查询：
+				<input type="text" name="text" value="Apple">
+				<input type="button" name="check" value="查询"></br>
+			</label>
+			
+			<label>3.删除操作：
+				<input type="button" name="delete" value="删除被选中的div及其子节点"></br>
+			</label>
+			
+			<label>4.插入文本：
+				<input type="text" name="insert" >
+				<input type="button" name="insertbox" value="插入选中的div后">
+			</label>
+		</span>
+		
+		
+	</center>
+
+	<script>
+		var inputList = document.getElementsByTagName("input");
+		var rootTree = document.getElementById("root");
+		var div = document.getElementsByTagName("div");
+		var arr = [];
+		var count = 0;
+		var Clock = null;
+
+		window.onload = function(){
+			
+			//前序遍历 深度优先遍历
+			function pre(node){
+				if (node) {
+					arr.push(node);
+					for (var i = 0; i < node.childElementCount; i++) {
+						pre(node.children[i]);
+					}					
+				}	
+			}
+
+
+			//层次遍历 广度优先遍历
+			function cengci(node){
+				if (node) {
+					arr.push(node);
+					cengci(node.nextElementSibling);
+					node = arr[count++];
+					cengci(node.firstElementChild)
+				}
+			}
+			
+
+			//计时器开始遍历数组，展示遍历过程
+			function play(){ 
+				var num = 0;
+				arr[0].style.backgroundColor = "red";
+
+				Clock = setInterval(function(){
+					if(num >= arr.length-1){
+						clearInterval(Clock);
+						arr[arr.length-1].style.backgroundColor = "white";
+					}
+					else{
+						num ++;
+						arr[num].style.backgroundColor = "red";
+						arr[num-1].style.backgroundColor = "white";
+					}
+					
+					
+				},500);
+			}
+
+			//查询遍历
+			function check(text){
+					
+						var num = 0;
+						Clock = setInterval(function(){
+							//console.log(arr[num])
+							if(arr[num].firstChild.nodeValue.replace(/(^\s*)|(\s*$)/g, "") != text){
+								arr[num].style.backgroundColor = "red";
+								if(num > 0){
+									arr[num-1].style.backgroundColor = "white";
+								}			
+							}
+							else{
+								arr[num].style.backgroundColor = "yellow";
+								arr[num-1].style.backgroundColor = "white";
+								clearInterval(Clock);
+							}
+							num++;
+						},500);
+						
+					
+			}
+
+			function reset(){
+				arr = [];
+				clearInterval(Clock);
+				var div = document.getElementsByTagName("div");
+				console.log(div.length);
+				for (var i = 0; i < div.length; i++) {
+					div[i].style.backgroundColor = "#FFF";
+				}
+			}
+
+			
+		
+
+			//绑定点击事件函数
+			inputList[0].addEventListener("click", function(){
+				reset();
+				pre(rootTree);
+				play();
+			});
+
+			inputList[1].addEventListener("click", function(){
+				reset();
+				cengci(rootTree);
+				play();
+			});
+
+			inputList[3].addEventListener("click", function(){
+				var text = inputList[2].value;
+				reset();
+				pre(rootTree);
+				check(text);
+			});
+
+			//点击div变色
+			var myDiv;
+			for (var i = 0; i < div.length; i++) {
+				div[i].onclick = function(e){
+					reset();
+					this.style.backgroundColor = "pink";
+					e.stopPropagation();//阻止事件冒泡
+					myDiv = this;
+				};	
+			}
+
+			//删除被选中的div及其子节点
+			inputList[4].addEventListener("click",function(){
+				if (myDiv === undefined) {
+					alert("请选中一个盒子再执行此操作");
+				}
+				else{
+					var parent = myDiv.parentNode;
+					parent.removeChild(myDiv);
+				}
+			});
+
+			//插入选中的div后
+			inputList[6].addEventListener("click", function(){
+				var insert = inputList[5].value;
+				if (insert === "") {
+					alert("请输入要插入的内容");
+				}
+				else if(myDiv === undefined){
+					alert("请先选中需要插入的置节点位");
+				}
+				else{
+					var newDiv = document.createElement("div");
+					newDiv.innerHTML = insert;
+					myDiv.appendChild(newDiv);
+				}
+
+				//因为新加入div，所以要重新绑定点击div变色事件
+				for (var i = 0; i < div.length; i++) {
+					div[i].onclick = function(e){
+						reset();
+						this.style.backgroundColor = "pink";
+						e.stopPropagation();//阻止事件冒泡
+						myDiv = this;
+					};	
+				}
+			});
+
+			
+
+		}
+	</script>
+</body>
+</html>
